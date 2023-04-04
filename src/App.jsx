@@ -6,7 +6,8 @@ import CanvasLoader from './components/CanvasLoader'
 
 // appear in the menu bar
 const Models = [
-  {title: 'ring', url: './models/ring.glb', scaleXYZ: 0.001},
+  {title: 'ring 01', url: './models/ring.glb', scaleXYZ: 0.002},
+  {title: 'ring 02', url: './models/ring_gold_with_diamond.glb', scaleXYZ: 0.1},
   {title: 'hammer', url: './models/hammer.glb', scaleXYZ: 1},
 ];
 const Backgrounds = [
