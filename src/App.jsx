@@ -4,39 +4,55 @@ import { useControls } from 'leva'
 
 // appear in the menu bar
 const Models = [
-  { title: 'Hammer', url: './models/hammer.glb' },
-  { title: 'Drill', url: './models/drill.glb' },
-  { title: 'Tape Measure', url: './models/tapeMeasure.glb' }
+  {title: 'ring', url: './models/ring.glb', scaleXYZ: 0.001},
+  {title: 'hammer', url: './models/hammer.glb', scaleXYZ: 1},
+];
+const Backgrounds = [
+  {name: 'museum', url: './img/risd_museum.hdr', autoRotate: true},
+  {name: 'blue sky', url: './img/bluesky.hdr', autoRotate: false},
+  {name: 'work shop', url: './img/workshop_1k.hdr', autoRotate: true},
 ]
 
-function Model({url}) {
+function Model({url,scaleXYZ}) {
   const { scene } = useGLTF(url)
-  return <primitive object={scene} />
+  return <primitive 
+    object={scene} 
+    scale={[scaleXYZ, scaleXYZ, scaleXYZ]}
+    />
 }
 
 export default function App() {
-  const { title } = useControls({
+  const { title, background, materials } = useControls({
     title: {
+      value: Models[0].title,
       options: Models.map(({ title }) => title)
     },
-    test: {
-      options: ['a', 'b', 'c']
+    background: {
+      value: Backgrounds[0].name,
+      options: Backgrounds.map(({ name }) => name)
     }
-  })
+  });
 
-  console.log("title: ",title);
-
+  console.log("loaded");
   return (
     <>
       <Canvas camera={{ position: [0, 0, -0.2], near: 0.025 }}>
-        <Environment files="./img/workshop_1k.hdr" background />
+        <Environment 
+        // files={'./img/workshop_1k.hdr'}
+        files={Backgrounds[Backgrounds.findIndex((item) => item.name === background)].url} 
+        background />
         <group>
-          <Model url={Models[Models.findIndex((m) => m.title === title)].url} />
+          <Model 
+          url={Models[Models.findIndex((m) => m.title === title)].url} 
+          scaleXYZ={Models[Models.findIndex((m) => m.title === title)].scaleXYZ}
+          />
         </group>
-        <OrbitControls autoRotate />
+        <OrbitControls 
+          autoRotate={Backgrounds[Backgrounds.findIndex((item) => item.name === background)].autoRotate} 
+        />
         <Stats />
       </Canvas>
-      <span id="info">The {title} is selected.</span>
+      <span id="info">{title} in the {background}</span>
     </>
   )
 }
