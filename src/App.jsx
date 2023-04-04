@@ -1,6 +1,8 @@
+import {Suspense } from "react";
 import { Canvas } from '@react-three/fiber'
 import { Stats, OrbitControls, Environment, useGLTF } from '@react-three/drei'
 import { useControls } from 'leva'
+import CanvasLoader from './components/CanvasLoader'
 
 // appear in the menu bar
 const Models = [
@@ -37,20 +39,23 @@ export default function App() {
   return (
     <>
       <Canvas camera={{ position: [0, 0, -0.2], near: 0.025 }}>
-        <Environment 
-        // files={'./img/workshop_1k.hdr'}
-        files={Backgrounds[Backgrounds.findIndex((item) => item.name === background)].url} 
-        background />
-        <group>
-          <Model 
-          url={Models[Models.findIndex((m) => m.title === title)].url} 
-          scaleXYZ={Models[Models.findIndex((m) => m.title === title)].scaleXYZ}
+        <Suspense fallback={<CanvasLoader />}>
+          <Environment 
+          // files={'./img/workshop_1k.hdr'}
+          files={Backgrounds[Backgrounds.findIndex((item) => item.name === background)].url} 
+          background />
+            <group>
+              <Model 
+              url={Models[Models.findIndex((m) => m.title === title)].url} 
+              scaleXYZ={Models[Models.findIndex((m) => m.title === title)].scaleXYZ}
+              />
+            </group>
+          
+          <OrbitControls 
+            autoRotate={Backgrounds[Backgrounds.findIndex((item) => item.name === background)].autoRotate} 
           />
-        </group>
-        <OrbitControls 
-          autoRotate={Backgrounds[Backgrounds.findIndex((item) => item.name === background)].autoRotate} 
-        />
-        <Stats />
+        </Suspense>
+        {/* <Stats /> */}
       </Canvas>
       <span id="info">{title} in the {background}</span>
     </>
